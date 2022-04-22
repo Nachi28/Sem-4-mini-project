@@ -125,13 +125,12 @@ void loop() {
     delay(1000);
     
     turnLeft();
-    delay(2000);
+    delay(3000);//check time practically
     Stop();
-    Serial.println("Reached");
+    Serial.println("Reached and avoided the obstacle");
+    
     delay(1000);
     exit(0);
-
-    
   }
   else
   {
@@ -195,27 +194,6 @@ void moveBackward() {
   
 }
 
-int lookRight()
-{  
-  servo.write(10);
-  delay(500);
-  int distance = readPing();
-  delay(100);
-  servo.write(90);
-  return distance;
-}
-
-int lookLeft()
-{
-  servo.write(170);
-  delay(500);
-  int distance = readPing();
-  delay(100);
-  servo.write(90);
-  return distance;
-  delay(100);
-}
-
 int readPing()
 {
   delay(70);
@@ -226,7 +204,7 @@ int readPing()
   return cm;
 }
 
-void go(void)
+void go()
 {
   Serial.println("Starting in 3");
   delay(1000);
@@ -240,4 +218,4 @@ void go(void)
 
 //remembaer void loop check one value then move on then starts a new loop...so previous values are gone
 //can improve forward function for stepwise with while loop (tooez)
-//
+//calibrate motor speeds and all delay times
