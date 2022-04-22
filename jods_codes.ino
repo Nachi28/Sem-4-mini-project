@@ -204,7 +204,7 @@ int readPing()
   return cm;
 }
 
-void go()
+void go(void)
 {
   Serial.println("Starting in 3");
   delay(1000);
