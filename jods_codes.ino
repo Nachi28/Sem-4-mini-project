@@ -15,6 +15,7 @@ int IR_RIGHT = A0;
 int IR_LEFT = A1; 
 int button = 12;
 
+//change the initial and final posi as user wants
 int ini_x_cordi = 0;
 int final_x_cordi = 2; 
 
@@ -125,7 +126,7 @@ void loop() {
     Stop();
     delay(1000);
     
-    turnLeft();
+    turnLeft();//right or left...
     delay(3000);//check delay time practically
     Stop();
     Serial.println("Reached and avoided the obstacle");
