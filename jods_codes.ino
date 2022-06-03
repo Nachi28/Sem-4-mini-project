@@ -1,5 +1,4 @@
 #include<NewPing.h>
-#include <Servo.h>
 
 //Motor setup
 int sp_pinA = 9;  
@@ -8,7 +7,6 @@ int MOTOR_A1 = 8;
 int MOTOR_A2 = 10;
 int MOTOR_B1 = 12; 
 int MOTOR_B2 = 13; 
-Servo servo;
 
 //IR setup 
 int IR_RIGHT = A0; 
@@ -24,8 +22,8 @@ int final_x_cordi = 2;
 #define TRIG A2
 #define ECHO A3 
 #define MAX_DISTANCE 200
-int sp_valueA = 60;
-int sp_valueB = 60;
+int sp_valueA = 85;
+int sp_valueB = 85;
 int distance = 100;
 
 //NewPing sonar(trigger_pin, echo_pin [, max_cm_distance]);
@@ -54,20 +52,17 @@ void setup()
 }
 
 void loop() {
-  
-//  digitalWrite(button, LOW);
-  if(digitalRead(button)){
-//  Serial.println("high");
-    sp_valueA = 80;
-    sp_valueB = 80;
+//  Serial.println(analogRead(A0));
+    sp_valueA = 85;
+    sp_valueB = 85;
    
     //Acts like Stop function and counts crosses to reach final destination
-    if (!digitalRead(IR_RIGHT) && !digitalRead(IR_LEFT)) 
+    if (analogRead(A0)<200 && analogRead(A1)<200) 
     {
       Serial.println("X cordi =");
       ini_x_cordi ++;
       Serial.println(ini_x_cordi);
-      delay(2000);
+      delay(100);
 
       if (ini_x_cordi == final_x_cordi)
       {
@@ -77,23 +72,23 @@ void loop() {
         exit(0);
       }
 
-//      Stop();
-//    delay(300);
+      Stop();
+    delay(300);
     }
-    else if (!digitalRead(IR_RIGHT) && digitalRead(IR_LEFT)) 
-    {
-    Serial.println("left");
-    turnLeft();
-//  delay(200);
-      
-    }
-    else if (digitalRead(IR_RIGHT) && !digitalRead(IR_LEFT)) 
+    else if (analogRead(A0)<200 && analogRead(A1)>200) 
     {
     Serial.println("right");
     turnRight(); 
 //  delay(200); 
+      
     }
-    else if (digitalRead(IR_RIGHT) && digitalRead(IR_LEFT)) 
+    else if (analogRead(A0)>200 && analogRead(A1)<200) 
+    {
+    Serial.println("left");
+    turnLeft();
+//  delay(200);
+    }
+    else if (analogRead(A0)>200 && analogRead(A1)>200) 
     { 
     Serial.println("forward");
     moveForward();
@@ -102,15 +97,13 @@ void loop() {
     delay(10);
 
     }
-  }
-  else{
-  Serial.println("low");
-  sp_valueA = 80;
-  sp_valueB = 80;
+  
+  sp_valueA = 85;
+  sp_valueB = 85;
   int distanceRight = 0;
   int distanceLeft = 0;
   delay(50);
-  }
+  
 //  distance = readPing();
 //  Serial.println(distance);
 
@@ -122,16 +115,17 @@ void loop() {
     Serial.println(ini_x_cordi);
     delay(1000);
     moveBackward();
-    delay(1000);
+
+    delay(100);
     Stop();
     delay(1000);
     
     turnLeft();//right or left...
-    delay(3000);//check delay time practically
+    delay(1500);//check delay time practically
     Stop();
     Serial.println("Reached and avoided the obstacle");
     
-    delay(1000);
+    delay(1500);
     exit(0);
   }
   else
@@ -183,8 +177,10 @@ void moveForward() {
   digitalWrite(MOTOR_B2, LOW);
 }
 void moveBackward() {
-  while(digitalRead(IR_RIGHT) && digitalRead(IR_LEFT))
+  Serial.println("hi");
+  while(analogRead(A0)>200 && analogRead(A1)>200)
   {
+        
   Serial.println("backwards");
   analogWrite(sp_pinA, sp_valueA);
   analogWrite(sp_pinB, sp_valueB);
@@ -193,7 +189,7 @@ void moveBackward() {
   digitalWrite(MOTOR_B1, LOW);
   digitalWrite(MOTOR_B2, HIGH);
   }
-  
+  Serial.println("end");
 }
 
 int readPing()
@@ -216,9 +212,3 @@ void go(void)
   delay(1000); 
   Serial.println("GOOOOO");
 }
-
-
-//remember void loop checks one value then move on then starts a new loop...so previous values are gone
-//can improve forward function for stepwise with while loop just as in backward function (tooez)
-//calibrate motor speeds and all delay times
-//if possible take square grid
